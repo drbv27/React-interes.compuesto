@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Formik, Form } from "formik";
 import Input from "./components/Input";
 import Button from "./components/Button";
 import Container from "./components/Container";
 import Section from "./components/Section";
+import Balance from "./components/Balance";
 
 const compoundInterest = (deposit, contribution, years, rate) => {
   let total = deposit;
@@ -13,7 +15,15 @@ const compoundInterest = (deposit, contribution, years, rate) => {
   return Math.round(total);
 };
 
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
 function App() {
+  const [balance, setBalance] = useState("");
   const handleSubmit = ({ deposit, contribution, years, rate }) => {
     const val = compoundInterest(
       Number(deposit),
@@ -21,7 +31,7 @@ function App() {
       Number(years),
       Number(rate)
     );
-    console.log(val);
+    setBalance(formatter.format(val));
   };
   return (
     <Container>
@@ -43,6 +53,7 @@ function App() {
             <Button>Calcular</Button>
           </Form>
         </Formik>
+        {balance !== "" ? <Balance>Balance Final: {balance}</Balance> : null}
       </Section>
     </Container>
   );
